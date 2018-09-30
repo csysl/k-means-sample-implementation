@@ -1,10 +1,10 @@
 /*
-ÊµÏÖk-meansËã·¨£º
-ĞèÌá¹©¾ÛÀà´ØÊık£¬³õÊ¼´ØĞÄËæ»ú»ñÈ¡
-ĞèÌá¹©¾ÛÀà¶ÔÏóµÄÎ¬¶Èd
-ÖÕÖ¹Ìõ¼ş£ºÇ°ºóÁ½´ÎãĞÖµ²îĞ¡ÓÚ0.1£¬ãĞÖµÎª¶ÔÏóÆ½¾ùÎó²îµÄ×ÜºÍ
+å®ç°k-meansç®—æ³•ï¼š
+éœ€æä¾›èšç±»ç°‡æ•°kï¼Œåˆå§‹ç°‡å¿ƒéšæœºè·å–
+éœ€æä¾›èšç±»å¯¹è±¡çš„ç»´åº¦d
+ç»ˆæ­¢æ¡ä»¶ï¼šå‰åä¸¤æ¬¡é˜ˆå€¼å·®å°äº0.1ï¼Œé˜ˆå€¼ä¸ºå¯¹è±¡å¹³å‡è¯¯å·®çš„æ€»å’Œ
 
-Êı¾İÒÔtxtÊäÈëÊä³ö
+æ•°æ®ä»¥txtè¾“å…¥è¾“å‡º
 */
 
 #include<stdio.h>
@@ -16,13 +16,13 @@
 #include<vector>
 using namespace std;
 
-int k, d;//k´Ø£¬dÎ¬
+int k, d;//kç°‡ï¼Œdç»´
 
 struct Tuple {
 	vector<float> T;
 };
-//¾àÀëº¯Êı²ÉÓÃÁ½¶ÔÏóÖ®¼äµÄÅ·¼¸ÀïµÃ¾àÀë
-float Distance(Tuple A, Tuple B,int d) {
+//è·ç¦»å‡½æ•°é‡‡ç”¨ä¸¤å¯¹è±¡ä¹‹é—´çš„æ¬§å‡ é‡Œå¾—è·ç¦»
+float Distance(Tuple &A, Tuple &B,int d) {
 	float result=0, tmp;
 	for (int i = 0; i < d; i++) {
 		tmp = (A.T[i] - B.T[i])*(A.T[i] - B.T[i]);
@@ -32,8 +32,8 @@ float Distance(Tuple A, Tuple B,int d) {
 	//cout << "  " << result;
 	return result;
 }
-//¼ÆËãµ±Ç°¶ÔÏóÊôÓÚÄÄ¸ö´Ø
-int Cluster(vector<Tuple> center, Tuple tuple, int k,int d) {
+//è®¡ç®—å½“å‰å¯¹è±¡å±äºå“ªä¸ªç°‡
+int Cluster(vector<Tuple> &center, Tuple &tuple, int k,int d) {
 	float dis = Distance(center[0], tuple,d);
 	float tmp;
 	int label = 0;
@@ -47,8 +47,8 @@ int Cluster(vector<Tuple> center, Tuple tuple, int k,int d) {
 	}
 	return label;
 }
-//¼ÆËãÆ½¾ùÎó²î
-float Arrerror(vector<Tuple>cluster[], vector<Tuple> center, int k,int d) {
+//è®¡ç®—å¹³å‡è¯¯å·®
+float Arrerror(vector<Tuple>cluster[], vector<Tuple> &center, int k,int d) {
 	float sum = 0;
 	for (int i = 0; i < k; i++) {
 		vector<Tuple> tmp = cluster[i];
@@ -56,11 +56,11 @@ float Arrerror(vector<Tuple>cluster[], vector<Tuple> center, int k,int d) {
 			sum += Distance(tmp[j], center[i],d);
 		}
 	}
-	//cout << "Æ½¾ùÎó²îºÍ" << sum << endl;
+	//cout << "å¹³å‡è¯¯å·®å’Œ" << sum << endl;
 	return sum;
 }
-//»ñµÃµ±Ç°´ØµÄ¾ÛÀàÖĞĞÄ
-Tuple getcenter(vector<Tuple> tuples,int d) {
+//è·å¾—å½“å‰ç°‡çš„èšç±»ä¸­å¿ƒ
+Tuple getcenter(vector<Tuple> &tuples,int d) {
 	Tuple center;
 	int num = tuples.size();
 	//cout << "num" << num;
@@ -81,23 +81,23 @@ Tuple getcenter(vector<Tuple> tuples,int d) {
 	return center;
 }
 
-void Kmeans(vector<Tuple>tuples, int k, int d) {
-	vector<Tuple> cluster[100];//k´Ø£¬×î¶àÖ§³Ö·ÖÎª100´Ø
-	vector<Tuple> tupleslist;//ÓÃÓÚ´æ·ÅÎó²î×îĞ¡¾ÛÀàÊ±µÄ¶ÔÏóË³Ğò
-	vector<Tuple> center;//´ØĞÄ
+void Kmeans(vector<Tuple>&tuples, int k, int d) {
+	vector<Tuple> cluster[100];//kç°‡ï¼Œæœ€å¤šæ”¯æŒåˆ†ä¸º100ç°‡
+	vector<Tuple> tupleslist;//ç”¨äºå­˜æ”¾è¯¯å·®æœ€å°èšç±»æ—¶çš„å¯¹è±¡é¡ºåº
+	vector<Tuple> center;//ç°‡å¿ƒ
 	Tuple tuple;
 	int num = tuples.size();
 
-	int label[100];//±ê¼ÇÊôÓÚÄÄ¸ö´Ø
-	int labelist[10][100];//µü´ú100´Î£¬¼ÇÂ¼Ã¿´ÎµÄ±ê¼Ç
-	float tag_a = INFINITY; //·ÅÖÃ×îĞ¡Îó²î
-	int tag_b = -1;   //·ÅÖÃÎó²î×îĞ¡Ê±µÄµü´ú´ÎÊı
-	float a, b;//a:Îó²î£¬b:Ç°Ò»´ÎµÄÎó²î
+	int label[100];//æ ‡è®°å±äºå“ªä¸ªç°‡
+	int labelist[10][100];//è¿­ä»£100æ¬¡ï¼Œè®°å½•æ¯æ¬¡çš„æ ‡è®°
+	float tag_a = INFINITY; //æ”¾ç½®æœ€å°è¯¯å·®
+	int tag_b = -1;   //æ”¾ç½®è¯¯å·®æœ€å°æ—¶çš„è¿­ä»£æ¬¡æ•°
+	float a, b;//a:è¯¯å·®ï¼Œb:å‰ä¸€æ¬¡çš„è¯¯å·®
 
-	//¼ÆËãÊ®´Î£¬È¡Îó²î×îĞ¡µÄÊä³ö
+	//è®¡ç®—åæ¬¡ï¼Œå–è¯¯å·®æœ€å°çš„è¾“å‡º
 	for (int t = 0; t < 10; t++) {
-		//»ñÈ¡k¸ö³õÊ¼´ØĞÄ
-		random_shuffle(tuples.begin(), tuples.end());//´òÂÒtuplesË³Ğò£¬È¡Ç°k¸öÎª³õÊ¼´ØĞÄ£¬´ïµ½Ëæ»úÈ¡µÃ´ØĞÄµÄÄ¿µÄ
+		//è·å–kä¸ªåˆå§‹ç°‡å¿ƒ
+		random_shuffle(tuples.begin(), tuples.end());//æ‰“ä¹±tuplesé¡ºåºï¼Œå–å‰kä¸ªä¸ºåˆå§‹ç°‡å¿ƒï¼Œè¾¾åˆ°éšæœºå–å¾—ç°‡å¿ƒçš„ç›®çš„
 		//cout << "debug1"<<endl;
 		center.clear();
 		for (int i = 0; i < k; i++) {
@@ -111,7 +111,7 @@ void Kmeans(vector<Tuple>tuples, int k, int d) {
 			//cout <<"cen"<<i<<" "<< center[i].T[0]<<"  ";
 		}
 		//cout << "debug2"<<endl;
-		//¼ÆËãÊôÓÚÄÄ¸ö´Ø,Ìí¼Óµ½´Ø
+		//è®¡ç®—å±äºå“ªä¸ªç°‡,æ·»åŠ åˆ°ç°‡
 		for (int i = 0; i<num; i++) {
 			label[i] = Cluster(center, tuples[i], k,d);
 			cluster[label[i]].push_back(tuples[i]);
@@ -120,9 +120,9 @@ void Kmeans(vector<Tuple>tuples, int k, int d) {
 		//cout << "debug3" << endl;
 		a = Arrerror(cluster, center, k,d);
 		//cout << a;
-		//µü´ú£¬Ç°ºóÁ½´ÎÎó²îĞ¡ÓÚ0.1Ìø³ö
+		//è¿­ä»£ï¼Œå‰åä¸¤æ¬¡è¯¯å·®å°äº0.1è·³å‡º
 		for (int i = 0;; i++) {
-			//»ñµÃ´ØĞÄ
+			//è·å¾—ç°‡å¿ƒ
 			tuple.T.clear();
 			center.clear();
 			for (int j = 0; j < k; j++) {
@@ -137,11 +137,11 @@ void Kmeans(vector<Tuple>tuples, int k, int d) {
 			b = a;
 			a = Arrerror(cluster, center, k,d);
 			//cout << a << endl;
-			//Çå¿ÕÔ­´Ø
+			//æ¸…ç©ºåŸç°‡
 			for (int j = 0; j < k; j++) {
 				cluster[j].clear();
 			}
-			//¼ÆËãµÃµ½ĞÂ´Ø
+			//è®¡ç®—å¾—åˆ°æ–°ç°‡
 			for (int j = 0; j<num; j++) {
 				label[j] = Cluster(center, tuples[j], k,d);
 				labelist[t][j] = label[j];
@@ -151,12 +151,12 @@ void Kmeans(vector<Tuple>tuples, int k, int d) {
 			//cout << endl;
 			if (abs(a - b) <= 0.1)break;
 		}
-		//Çå¿Õ´Ø
+		//æ¸…ç©ºç°‡
 		for (int j = 0; j < k; j++) {
 			cluster[j].clear();
 		}
 		//cout << "debug6" << endl;
-		//È¡µÃÎó²îÖµ×îĞ¡µÄ¾ÛÀà
+		//å–å¾—è¯¯å·®å€¼æœ€å°çš„èšç±»
 		tuple.T.clear();
 		if (a <= tag_a) {
 			tag_a = a;
@@ -173,15 +173,15 @@ void Kmeans(vector<Tuple>tuples, int k, int d) {
 		//cout << "debug7" << endl;
 
 	}
-	//Êä³ö½á¹û
-	cout << "½á¹û" << endl;
+	//è¾“å‡ºç»“æœ
+	cout << "ç»“æœ" << endl;
 	for (int i = 0; i < num; i++) {
 		for (int j = 0; j < d; j++) {
 			cout << tupleslist[i].T[j] << "  ";
 		}
 		cout << "cluster:" << labelist[tag_b][i] << endl;
 	}
-	//±£´æ½á¹ûµ½out.txt
+	//ä¿å­˜ç»“æœåˆ°out.txt
 	ofstream mycout("out.txt");
 	for (int i = 0; i < num; i++) {
 		for (int j = 0; j < d; j++) {
@@ -192,7 +192,7 @@ void Kmeans(vector<Tuple>tuples, int k, int d) {
 }
 
 int main() {
-    cout << "ÊäÈëÊı¾İÎ¬¶È:" << endl;
+    cout << "è¾“å…¥æ•°æ®ç»´åº¦:" << endl;
 	cin >> d;
 	Tuple tuple;
 	for (int i = 0; i < d; i++) {
@@ -203,7 +203,7 @@ int main() {
 	ifstream refile;
 	refile.open("data2.txt", ios::in);
 	if(!refile)
-		cout<< "ÕÒ²»µ½ÊäÈëÎÄ¼ş" << endl;
+		cout<< "æ‰¾ä¸åˆ°è¾“å…¥æ–‡ä»¶" << endl;
 	vector<Tuple> tuples;
 	int count = 0, tab=0;
 	while (!refile.eof()) {
@@ -218,17 +218,17 @@ int main() {
 	}
 begin:
 	while (1) {
-		cout << "ÊäÈë¾ÛÀàµÄ´ØÊı£º" << endl;
+		cout << "è¾“å…¥èšç±»çš„ç°‡æ•°ï¼š" << endl;
 		cin >> k;
 		if (tab < k * d) {
-			cout << "¶ÔÏóÊıÄ¿³¬¹ıÁË´ØÊı,ÇëÖØĞÂÊäÈë£º" << endl;
+			cout << "å¯¹è±¡æ•°ç›®è¶…è¿‡äº†ç°‡æ•°,è¯·é‡æ–°è¾“å…¥ï¼š" << endl;
 			goto begin;
 		}
 		else if (k < 1) {
-			cout << "¾ÛÀàÊıÄ¿²»ÄÜĞ¡ÓÚ1£¬ÇëÖØĞÂÊäÈë£º" << endl;
+			cout << "èšç±»æ•°ç›®ä¸èƒ½å°äº1ï¼Œè¯·é‡æ–°è¾“å…¥ï¼š" << endl;
 			goto begin;
 		}
-		//¼ÆËãk¾ùÖµ
+		//è®¡ç®—kå‡å€¼
 		Kmeans(tuples, k,d);
 	}
 	
